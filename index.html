@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>World Trigger Birthday Calendar</title>
+    <script type="importmap">
+
+        {
+            "imports": {
+                "@fullcalendar/core": "https://cdn.skypack.dev/@fullcalendar/core@6.1.11",
+                "@fullcalendar/multimonth": "https://cdn.skypack.dev/@fullcalendar/multimonth@6.1.11",
+                "@fullcalendar/daygrid": "https://cdn.skypack.dev/@fullcalendar/daygrid@6.1.11"
+            } 
+        }
+        
+    </script>
+</head>
+<body>
+    <div id="calendar"></div>
+    <script type="module">
+
+        import { Calendar } from '@fullcalendar/core';
+        import multiMonthPlugin from '@fullcalendar/multimonth';
+        import dayGridPlugin from '@fullcalendar/daygrid';
+
+        import database from './assets/database.js';
+
+        const year = new Date().getFullYear();
+        const { wt_characters } = database;
+        const events = wt_characters.map((data) => ({ title: data.title, start: `${year}-${data.birth}` }));
+
+        document.addEventListener('DOMContentLoaded', function() {
+
+            const calendarEl = document.querySelector('#calendar');
+
+            const calendar = new Calendar(calendarEl, {
+                plugins: [multiMonthPlugin, dayGridPlugin],
+                validRange: {
+                    start: `${year}-01-01`,
+                    end: `${year}-12-31`,
+                },
+                initialView: 'dayGridMonth',
+                headerToolbar: {
+                    right: 'multiMonthYear,dayGridMonth prev today next',
+                    left: 'title',
+                },
+                multiMonthMaxColumns: 2,
+                events,
+            });
+
+            calendar.render();
+
+        });
+
+    </script>
+</body>
+</html>
